@@ -5,10 +5,15 @@ export const validatorCallbacks = {
       label?: string;
     }
   ) => {
-    if (!value) return `${options?.label ?? 'This'} field is required`;
+    if (!value) return `${options?.label ?? 'This field'} is required`;
     return null;
   },
-  email: (value: string) => {
+  email: (
+    value: string,
+    options?: {
+      label?: string;
+    }
+  ) => {
     if (!value.includes('@')) return 'Invalid email address';
     return null;
   },

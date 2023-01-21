@@ -41,7 +41,9 @@ const useForm = (initialValues: JsonFormControl[] = []) => {
         )) {
           if (validatorValue) {
             let functionKey = key as 'required' | 'email';
-            const errMsg = validators[functionKey](value);
+            const errMsg = validators[functionKey](value, {
+              label: targetItem.label,
+            });
             setErrors((errors) => ({
               ...errors,
               // if any error, return error or clear it

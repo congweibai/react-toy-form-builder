@@ -14,6 +14,19 @@ export const templates: JsonFormControl[] = [
     type: 'shortText',
   },
   {
+    label: 'Email',
+    id: 'Ge13x',
+    validators: {
+      required: true,
+      email: true,
+    },
+    value: '',
+    options: {},
+    //old field in angular project as name
+    description: '',
+    type: 'shortText',
+  },
+  {
     label: 'ClassName',
     id: 'Ge23x',
     validators: {
@@ -26,15 +39,15 @@ export const templates: JsonFormControl[] = [
     type: 'shortText',
   },
   {
-    label: 'Email',
-    id: 'Ge13x',
+    label: 'Description',
+    id: 'De23x',
     validators: {
-      email: true,
+      required: true,
     },
     value: '',
     options: {},
     //old field in angular project as name
-    description: '',
-    type: 'shortText',
+    description: 'Put some description on Classname',
+    type: 'longText',
   },
 ];
