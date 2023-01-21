@@ -1,39 +1,54 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import {
+  JsonFormControl,
+  validatorCallbacks,
+} from '../components/my-form/scheme/formScheme';
 // form hook with validator
-
-interface FormValidators {
-  [name: string]: Function;
-}
-
-interface FormValue {
-  [key: string]: any;
-}
 
 interface FormError {
   [key: string]: any;
 }
 
-const useForm = (initialValues = {}, validators: FormValidators) => {
+const useForm = (initialValues: JsonFormControl[] = []) => {
   // set whole form values
-  const [values, setValues] = useState<FormValue>(initialValues);
+  const [values, setValues] = useState<JsonFormControl[]>(initialValues);
   // set form error state
   const [errors, setErrors] = useState<FormError>({});
 
-  const setFieldValue = useCallback(
-    (name: string, value: any) => {
-      setValues((values) => ({
-        ...values,
-        [name]: value,
-      }));
+  const validators = useMemo(() => {
+    return validatorCallbacks;
+  }, []);
 
+  const setFieldValue = useCallback(
+    (targetItem: JsonFormControl, value: any) => {
+      setValues((values) => {
+        const newValues = values.map((item) => {
+          if (item.id === targetItem.id) {
+            return {
+              ...item,
+              value: value,
+            };
+          }
+          return item;
+        });
+
+        return newValues;
+      });
       // if valitator passing, valia it
-      if (validators[name]) {
-        const errMsg = validators[name](value);
-        setErrors((errors) => ({
-          ...errors,
-          // if any error, return error or clear it
-          [name]: errMsg || null,
-        }));
+      if (targetItem?.validators) {
+        for (const [key, validatorValue] of Object.entries(
+          targetItem?.validators
+        )) {
+          if (validatorValue) {
+            let functionKey = key as 'required' | 'email';
+            const errMsg = validators[functionKey](value);
+            setErrors((errors) => ({
+              ...errors,
+              // if any error, return error or clear it
+              [targetItem.id]: errMsg || null,
+            }));
+          }
+        }
       }
     },
     [validators]
