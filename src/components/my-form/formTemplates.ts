@@ -50,4 +50,17 @@ export const templates: JsonFormControl[] = [
     description: 'Put some description on Classname',
     type: 'longText',
   },
+  {
+    label: 'Selece your favourite food',
+    id: 'De13x',
+    validators: {
+      required: true,
+    },
+    value: '',
+    options: {},
+    selectionOptions: ["McDonald's", 'KFC', 'Sushi Train'],
+    //old field in angular project as name
+    description: '',
+    type: 'singleSelect',
+  },
 ];

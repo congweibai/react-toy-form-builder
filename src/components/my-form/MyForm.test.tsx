@@ -14,7 +14,6 @@ test('check all form element got render', () => {
   const formTemplates = templates;
   formTemplates.forEach((template) => {
     const formElement = screen.getByLabelText(template.label);
-    console.log('formElement', formElement);
     expect(formElement).toBeInTheDocument();
   });
 });
