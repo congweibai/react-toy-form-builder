@@ -13,7 +13,7 @@ test('check all form element got render', () => {
   render(<MyForm />);
   const formTemplates = templates;
   formTemplates.forEach((template) => {
-    const formElement = screen.getByLabelText(template.label);
+    const formElement = screen.getByTestId(new RegExp(template.id));
     expect(formElement).toBeInTheDocument();
   });
 });
