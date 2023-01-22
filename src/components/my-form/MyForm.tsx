@@ -41,7 +41,7 @@ function MyForm() {
             <div key={item.id}>
               <TextField
                 data-testid={item.id}
-                error={errors[item.id]}
+                error={!!errors[item.id]}
                 label={item.label}
                 value={item.value || ''}
                 onChange={(evt) => setFieldValue(item, evt.target.value)}
@@ -53,7 +53,7 @@ function MyForm() {
             <div key={item.id}>
               <TextField
                 data-testid={item.id}
-                error={errors[item.id]}
+                error={!!errors[item.id]}
                 label={item.label}
                 value={item.value || ''}
                 onChange={(evt) => setFieldValue(item, evt.target.value)}
@@ -69,7 +69,7 @@ function MyForm() {
                 <InputLabel id={item.id}>{item.label}</InputLabel>
                 <Select
                   labelId={item.id}
-                  error={errors[item.id]}
+                  error={!!errors[item.id]}
                   label={item.label}
                   value={item.value || ''}
                   onChange={(evt) => setFieldValue(item, evt.target.value)}
