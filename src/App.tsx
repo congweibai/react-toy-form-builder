@@ -1,6 +1,7 @@
-import React from 'react';
+import { Grid } from '@mui/material';
 // import logo from './logo.svg';
 import './App.css';
+import { FormBuilder } from './components/form-builder/FormBuilder';
 import { MyForm } from './components/my-form/MyForm';
 
 function App() {
@@ -20,7 +21,14 @@ function App() {
           Learn React
         </a>
       </header> */}
-      <MyForm></MyForm>
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <FormBuilder></FormBuilder>
+        </Grid>
+        <Grid item xs={6}>
+          <MyForm></MyForm>
+        </Grid>
+      </Grid>
     </div>
   );
 }
