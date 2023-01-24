@@ -8,14 +8,20 @@ import {
   Select,
   TextField,
 } from '@mui/material';
+import { useEffect } from 'react';
 import { useCallback } from 'react';
+import { useFormContext } from '../../context/form-context';
 import { useForm } from '../../hooks/useForm';
-import { templates } from './formTemplates';
 import { getIdValuePairs } from './helpers/getFormValues';
 
 function MyForm() {
   // const validators = useMemo(() => {
-  const { values, errors, setFieldValue } = useForm(templates);
+  const { templates } = useFormContext();
+
+  const { values, errors, setFieldValue, setValues } = useForm(templates);
+  useEffect(() => {
+    setValues(templates);
+  }, [templates, setValues]);
   // UI goes here
   const handleSubmit = useCallback(
     (e: React.SyntheticEvent) => {

@@ -2,21 +2,34 @@ import { render, screen } from '@testing-library/react';
 import { FormBuilder } from './FormBuilder';
 import { templates as deafultTemplates } from '../my-form/formTemplates';
 import userEvent from '@testing-library/user-event';
+import { FormProvider } from '../../context/form-context';
 test('renders FormBuilder', () => {
-  render(<FormBuilder />);
+  render(
+    <FormProvider>
+      <FormBuilder />
+    </FormProvider>
+  );
   const formElement = screen.getByText(/form builder/i);
   expect(formElement).toBeInTheDocument();
 });
 
 test('render every json item', () => {
-  render(<FormBuilder />);
+  render(
+    <FormProvider>
+      <FormBuilder />
+    </FormProvider>
+  );
   const expectedLength = deafultTemplates.length;
   const listParent = screen.getByTestId('builder-list');
   expect(listParent.childNodes).toHaveLength(expectedLength);
 });
 
 test('click remove button', async () => {
-  render(<FormBuilder />);
+  render(
+    <FormProvider>
+      <FormBuilder />
+    </FormProvider>
+  );
   const expectedLength = deafultTemplates.length;
   const listParent = screen.getByTestId('builder-list');
   const removeButtons = screen.getAllByRole('remove');

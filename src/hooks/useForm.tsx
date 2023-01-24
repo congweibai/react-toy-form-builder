@@ -56,7 +56,7 @@ const useForm = (initialValues: JsonFormControl[] = []) => {
     [validators]
   );
   // return all states
-  return { values, errors, setFieldValue };
+  return { values, errors, setFieldValue, setValues };
 };
 
 export { useForm };

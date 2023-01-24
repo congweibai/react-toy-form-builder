@@ -3,6 +3,7 @@ import { Grid } from '@mui/material';
 import './App.css';
 import { FormBuilder } from './components/form-builder/FormBuilder';
 import { MyForm } from './components/my-form/MyForm';
+import { FormProvider } from './context/form-context';
 
 function App() {
   return (
@@ -21,14 +22,16 @@ function App() {
           Learn React
         </a>
       </header> */}
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <FormBuilder></FormBuilder>
+      <FormProvider>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <FormBuilder></FormBuilder>
+          </Grid>
+          <Grid item xs={6}>
+            <MyForm></MyForm>
+          </Grid>
         </Grid>
-        <Grid item xs={6}>
-          <MyForm></MyForm>
-        </Grid>
-      </Grid>
+      </FormProvider>
     </div>
   );
 }

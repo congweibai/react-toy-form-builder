@@ -7,13 +7,13 @@ import {
   ListItemText,
 } from '@mui/material';
 import { useState } from 'react';
-import { templates as deafultTemplates } from '../my-form/formTemplates';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { JsonFormControl } from '../my-form/scheme/formScheme';
+import AddIcon from '@mui/icons-material/Add';
+import { useFormContext } from '../../context/form-context';
+import { v4 as uuid } from 'uuid';
 function FormBuilder() {
   const [selectedId, setSelectedId] = useState<string>();
-  const [templates, setTemplates] =
-    useState<JsonFormControl[]>(deafultTemplates);
+  const { templates, setTemplates } = useFormContext();
 
   const deleteItemFromTemplates = (id: string) => {
     const copyTemplates = [...templates];
@@ -22,6 +22,22 @@ function FormBuilder() {
       copyTemplates.splice(indexToRemove, 1);
       setTemplates(copyTemplates);
     }
+  };
+  const addItemToTemplates = () => {
+    const copyTemplates = [...templates];
+    copyTemplates.push({
+      label: 'Name',
+      id: uuid(),
+      validators: {
+        required: true,
+      },
+      value: '',
+      options: {},
+      //old field in angular project as name
+      description: '',
+      type: 'shortText',
+    });
+    setTemplates(copyTemplates);
   };
   return (
     <>
@@ -54,6 +70,12 @@ function FormBuilder() {
           );
         })}
       </List>
+
+      <Button role="add-item" onClick={() => addItemToTemplates()}>
+        <Avatar>
+          <AddIcon />
+        </Avatar>
+      </Button>
     </>
   );
 }
