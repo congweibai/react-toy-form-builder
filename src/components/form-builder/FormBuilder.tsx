@@ -6,7 +6,7 @@ import {
   ListItemAvatar,
   ListItemText,
 } from '@mui/material';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { useFormContext } from '../../context/form-context';
@@ -39,11 +39,35 @@ function FormBuilder() {
     });
     setTemplates(copyTemplates);
   };
+
+  const dragItem: any = useRef();
+  const dragOverItem: any = useRef();
+  const dragStart = (e: any, id: string) => {
+    dragItem.current = id;
+  };
+  const dragEnter = (e: any, id: string) => {
+    dragOverItem.current = id;
+  };
+  const drop = (e: any) => {
+    const copyListItems = [...templates];
+    const dragItemIndex = copyListItems.findIndex(
+      (item) => item.id === dragItem.current
+    );
+    const dragOverItemIndex = copyListItems.findIndex(
+      (item) => item.id === dragOverItem.current
+    );
+    const dragItemContent = copyListItems[dragItemIndex];
+    copyListItems.splice(dragItemIndex, 1);
+    copyListItems.splice(dragOverItemIndex, 0, dragItemContent);
+    dragItem.current = null;
+    dragOverItem.current = null;
+    setTemplates(copyListItems);
+  };
   return (
     <>
       <div>Form Builder</div>
       <List dense data-testid="builder-list">
-        {templates.map((template) => {
+        {templates.map((template, index) => {
           return (
             <ListItem
               selected={selectedId === template.id}
@@ -51,6 +75,10 @@ function FormBuilder() {
               onClick={() => {
                 setSelectedId(template.id);
               }}
+              draggable
+              onDragStart={(e) => dragStart(e, template.id)}
+              onDragEnter={(e) => dragEnter(e, template.id)}
+              onDragEnd={drop}
             >
               <ListItemText
                 primary={template.label}
