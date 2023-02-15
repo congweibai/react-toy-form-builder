@@ -1,6 +1,7 @@
 import {
   Avatar,
   Button,
+  Grid,
   List,
   ListItem,
   ListItemAvatar,
@@ -11,8 +12,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { useFormContext } from '../../context/form-context';
 import { v4 as uuid } from 'uuid';
+import { FormEditorPanel } from '../form-editor-panel/FormEditorPanel';
+import { getCurrentType } from '../../helper/formHelper';
+import { TemplateFormType } from '../my-form/scheme/formScheme';
 function FormBuilder() {
-  const [selectedId, setSelectedId] = useState<string>();
+  const [selectedId, setSelectedId] = useState<string>('');
   const { templates, setTemplates } = useFormContext();
 
   const deleteItemFromTemplates = (id: string) => {
@@ -37,6 +41,14 @@ function FormBuilder() {
       description: '',
       type: 'shortText',
     });
+    setTemplates(copyTemplates);
+  };
+  const onChangeTemplateType = (newType: TemplateFormType) => {
+    const copyTemplates = [...templates];
+    const indexToChange = copyTemplates.findIndex(
+      (item) => item.id === selectedId
+    );
+    copyTemplates[indexToChange].type = newType;
     setTemplates(copyTemplates);
   };
 
@@ -104,6 +116,16 @@ function FormBuilder() {
           <AddIcon />
         </Avatar>
       </Button>
+
+      <Grid container px={2}>
+        {selectedId && (
+          <FormEditorPanel
+            selectedId={selectedId}
+            currentType={getCurrentType(selectedId, templates)}
+            onChangeTemplateType={onChangeTemplateType}
+          ></FormEditorPanel>
+        )}
+      </Grid>
     </>
   );
 }
