@@ -9,3 +9,10 @@ export function getCurrentType(
     'shortText'
   );
 }
+
+export function getCurrentItem(
+  selectedId: string,
+  templates: JsonFormControl[]
+) {
+  return templates.find((template) => template.id === selectedId) || null;
+}
