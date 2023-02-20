@@ -13,7 +13,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useFormContext } from '../../context/form-context';
 import { v4 as uuid } from 'uuid';
 import { FormEditorPanel } from '../form-editor-panel/FormEditorPanel';
-import { getCurrentType } from '../../helper/formHelper';
+import { getCurrentItem } from '../../helper/formHelper';
 import { TemplateFormType } from '../my-form/scheme/formScheme';
 function FormBuilder() {
   const [selectedId, setSelectedId] = useState<string>('');
@@ -49,6 +49,15 @@ function FormBuilder() {
       (item) => item.id === selectedId
     );
     copyTemplates[indexToChange].type = newType;
+    setTemplates(copyTemplates);
+  };
+
+  const onChangeTemplateRequired = (isRequired: boolean) => {
+    const copyTemplates = [...templates];
+    const indexToChange = copyTemplates.findIndex(
+      (item) => item.id === selectedId
+    );
+    copyTemplates[indexToChange].validators.required = isRequired;
     setTemplates(copyTemplates);
   };
 
@@ -121,8 +130,9 @@ function FormBuilder() {
         {selectedId && (
           <FormEditorPanel
             selectedId={selectedId}
-            currentType={getCurrentType(selectedId, templates)}
+            currentItem={getCurrentItem(selectedId, templates)}
             onChangeTemplateType={onChangeTemplateType}
+            onChangeTemplateRequired={onChangeTemplateRequired}
           ></FormEditorPanel>
         )}
       </Grid>
