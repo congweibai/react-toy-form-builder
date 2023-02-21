@@ -1,10 +1,13 @@
 import {
+  FormControl,
   FormControlLabel,
   Grid,
+  InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
   Switch,
+  TextField,
 } from '@mui/material';
 import {
   JsonFormControl,
@@ -12,27 +15,35 @@ import {
 } from '../my-form/scheme/formScheme';
 
 function FormEditorPanel({
-  selectedId,
   currentItem,
-  onChangeTemplateType,
-  onChangeTemplateRequired,
+  onChangeCurrentItem,
 }: {
-  selectedId: string;
   currentItem: JsonFormControl | null;
-  onChangeTemplateType: (newType: TemplateFormType) => void;
-  onChangeTemplateRequired: (isRequired: boolean) => void;
+  onChangeCurrentItem: (newItem: JsonFormControl) => void;
 }) {
   const handleChange = (event: SelectChangeEvent) => {
     const {
       target: { value },
     } = event;
-    onChangeTemplateType(value as TemplateFormType);
+    const copyCurrentItem = { ...currentItem } as JsonFormControl;
+    copyCurrentItem.type = value as TemplateFormType;
+    onChangeCurrentItem(copyCurrentItem);
   };
   const handleRequiredChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {
       target: { checked },
     } = event;
-    onChangeTemplateRequired(checked);
+    const copyCurrentItem = { ...currentItem } as JsonFormControl;
+    copyCurrentItem.validators.required = checked;
+    onChangeCurrentItem(copyCurrentItem);
+  };
+  const handleLabelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { value },
+    } = event;
+    const copyCurrentItem = { ...currentItem } as JsonFormControl;
+    copyCurrentItem.label = value;
+    onChangeCurrentItem(copyCurrentItem);
   };
   return (
     <>
@@ -41,21 +52,33 @@ function FormEditorPanel({
         direction="column"
         alignContent="flex-start"
         alignItems="flex-start"
+        gap={2}
       >
         <Grid item>
-          Form Editor Panel goes here {selectedId} {currentItem?.type || ''}
+          Form Editor Panel goes here {currentItem?.id || ''}{' '}
+          {currentItem?.type || ''}
+        </Grid>
+        <Grid item width={300}>
+          <TextField
+            fullWidth
+            variant="outlined"
+            label="Form Label"
+            value={currentItem?.label || ''}
+            onChange={handleLabelChange}
+          />
         </Grid>
         <Grid item>
-          <Select
-            data-testid="custom-select"
-            value={currentItem?.type || ''}
-            label={currentItem?.type || ''}
-            onChange={handleChange}
-          >
-            <MenuItem value={'shortText'}>shortText</MenuItem>
-            <MenuItem value={'longText'}>longText</MenuItem>
-            <MenuItem value={'singleSelect'}>singleSelect</MenuItem>
-            {/* <MenuItem value={'number'}>number</MenuItem>
+          <FormControl>
+            <InputLabel>Form Type</InputLabel>
+            <Select
+              data-testid="custom-select"
+              value={currentItem?.type || ''}
+              onChange={handleChange}
+            >
+              <MenuItem value={'shortText'}>shortText</MenuItem>
+              <MenuItem value={'longText'}>longText</MenuItem>
+              <MenuItem value={'singleSelect'}>singleSelect</MenuItem>
+              {/* <MenuItem value={'number'}>number</MenuItem>
         <MenuItem value={'imageUpload'}>imageUpload</MenuItem>
         <MenuItem value={'fileAttachment'}>fileAttachment</MenuItem>
 
@@ -63,7 +86,8 @@ function FormEditorPanel({
         <MenuItem value={'checkbox'}>checkbox</MenuItem>
         <MenuItem value={'date'}>date</MenuItem>
         <MenuItem value={'sectionHeading'}>sectionHeading</MenuItem> */}
-          </Select>
+            </Select>
+          </FormControl>
         </Grid>
         <Grid item>
           <FormControlLabel

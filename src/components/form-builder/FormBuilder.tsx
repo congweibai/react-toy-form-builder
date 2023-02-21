@@ -14,7 +14,7 @@ import { useFormContext } from '../../context/form-context';
 import { v4 as uuid } from 'uuid';
 import { FormEditorPanel } from '../form-editor-panel/FormEditorPanel';
 import { getCurrentItem } from '../../helper/formHelper';
-import { TemplateFormType } from '../my-form/scheme/formScheme';
+import { JsonFormControl } from '../my-form/scheme/formScheme';
 function FormBuilder() {
   const [selectedId, setSelectedId] = useState<string>('');
   const { templates, setTemplates } = useFormContext();
@@ -43,24 +43,14 @@ function FormBuilder() {
     });
     setTemplates(copyTemplates);
   };
-  const onChangeTemplateType = (newType: TemplateFormType) => {
+  const onChangeCurrentItem = (newItem: JsonFormControl) => {
     const copyTemplates = [...templates];
     const indexToChange = copyTemplates.findIndex(
       (item) => item.id === selectedId
     );
-    copyTemplates[indexToChange].type = newType;
+    copyTemplates[indexToChange] = newItem;
     setTemplates(copyTemplates);
   };
-
-  const onChangeTemplateRequired = (isRequired: boolean) => {
-    const copyTemplates = [...templates];
-    const indexToChange = copyTemplates.findIndex(
-      (item) => item.id === selectedId
-    );
-    copyTemplates[indexToChange].validators.required = isRequired;
-    setTemplates(copyTemplates);
-  };
-
   const dragItem: any = useRef();
   const dragOverItem: any = useRef();
   const dragStart = (e: any, id: string) => {
@@ -86,7 +76,7 @@ function FormBuilder() {
   };
   return (
     <>
-      <div>Form Builder</div>
+      <div>Toy Form Builder</div>
       <List dense data-testid="builder-list">
         {templates.map((template, index) => {
           return (
@@ -129,10 +119,8 @@ function FormBuilder() {
       <Grid container px={2}>
         {selectedId && (
           <FormEditorPanel
-            selectedId={selectedId}
             currentItem={getCurrentItem(selectedId, templates)}
-            onChangeTemplateType={onChangeTemplateType}
-            onChangeTemplateRequired={onChangeTemplateRequired}
+            onChangeCurrentItem={onChangeCurrentItem}
           ></FormEditorPanel>
         )}
       </Grid>
