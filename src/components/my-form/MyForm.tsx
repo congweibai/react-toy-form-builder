@@ -18,10 +18,12 @@ function MyForm() {
   // const validators = useMemo(() => {
   const { templates } = useFormContext();
 
-  const { values, errors, setFieldValue, setValues } = useForm(templates);
+  const { values, errors, setFieldValue, setValues, setErrors } =
+    useForm(templates);
   useEffect(() => {
     setValues(templates);
-  }, [templates, setValues]);
+    setErrors({});
+  }, [templates, setValues, setErrors]);
   // UI goes here
   const handleSubmit = useCallback(
     (e: React.SyntheticEvent) => {
