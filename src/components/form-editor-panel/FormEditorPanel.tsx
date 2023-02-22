@@ -55,8 +55,7 @@ function FormEditorPanel({
         gap={2}
       >
         <Grid item>
-          Form Editor Panel goes here {currentItem?.id || ''}{' '}
-          {currentItem?.type || ''}
+          Properties: {currentItem?.id || ''} {currentItem?.type || ''}
         </Grid>
         <Grid item width={300}>
           <TextField
