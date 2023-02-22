@@ -32,9 +32,11 @@ test('click remove button', async () => {
   );
   const expectedLength = deafultTemplates.length;
   const listParent = screen.getByTestId('builder-list');
-  const removeButtons = screen.getAllByRole('remove');
+  const formItems = screen.getAllByRole('form-item');
   for (let i = 0; i < expectedLength; i++) {
-    userEvent.click(removeButtons[i]);
+    userEvent.click(formItems[i]);
+    const removeButton = screen.getByRole('remove');
+    userEvent.click(removeButton);
     expect(listParent.childNodes).toHaveLength(expectedLength - i - 1);
   }
 });

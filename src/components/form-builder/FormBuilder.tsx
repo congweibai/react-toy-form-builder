@@ -82,6 +82,10 @@ function FormBuilder() {
           return (
             <ListItem
               selected={selectedId === template.id}
+              style={{
+                border: selectedId === template.id ? '1px solid blue' : '',
+                paddingLeft: selectedId === template.id ? '18px' : '',
+              }}
               key={template.id}
               onClick={() => {
                 setSelectedId(template.id);
@@ -90,21 +94,24 @@ function FormBuilder() {
               onDragStart={(e) => dragStart(e, template.id)}
               onDragEnter={(e) => dragEnter(e, template.id)}
               onDragEnd={drop}
+              role="form-item"
             >
               <ListItemText
                 primary={template.label}
                 secondary={template.type}
               />
-              <ListItemAvatar>
-                <Button
-                  role="remove"
-                  onClick={() => deleteItemFromTemplates(template.id)}
-                >
-                  <Avatar>
-                    <DeleteIcon />
-                  </Avatar>
-                </Button>
-              </ListItemAvatar>
+              {selectedId === template.id && (
+                <ListItemAvatar>
+                  <Button
+                    role="remove"
+                    onClick={() => deleteItemFromTemplates(template.id)}
+                  >
+                    <Avatar>
+                      <DeleteIcon />
+                    </Avatar>
+                  </Button>
+                </ListItemAvatar>
+              )}
             </ListItem>
           );
         })}
