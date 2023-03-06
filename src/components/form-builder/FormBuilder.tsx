@@ -1,20 +1,27 @@
-import {
-  Avatar,
-  Button,
-  Grid,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-} from '@mui/material';
-import { useRef, useState } from 'react';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Avatar, Button, Grid, List } from '@mui/material';
+import { useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import { useFormContext } from '../../context/form-context';
 import { v4 as uuid } from 'uuid';
 import { FormEditorPanel } from '../form-editor-panel/FormEditorPanel';
 import { getCurrentItem } from '../../helper/formHelper';
 import { JsonFormControl } from '../my-form/scheme/formScheme';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { SortableItem } from '../sortable-item/SortableItem';
+
 function FormBuilder() {
   const [selectedId, setSelectedId] = useState<string>('');
   const { templates, setTemplates } = useFormContext();
@@ -51,71 +58,41 @@ function FormBuilder() {
     copyTemplates[indexToChange] = newItem;
     setTemplates(copyTemplates);
   };
-  const dragItem: any = useRef();
-  const dragOverItem: any = useRef();
-  const dragStart = (e: any, id: string) => {
-    dragItem.current = id;
-  };
-  const dragEnter = (e: any, id: string) => {
-    dragOverItem.current = id;
-  };
-  const drop = (e: any) => {
-    const copyListItems = [...templates];
-    const dragItemIndex = copyListItems.findIndex(
-      (item) => item.id === dragItem.current
-    );
-    const dragOverItemIndex = copyListItems.findIndex(
-      (item) => item.id === dragOverItem.current
-    );
-    const dragItemContent = copyListItems[dragItemIndex];
-    copyListItems.splice(dragItemIndex, 1);
-    copyListItems.splice(dragOverItemIndex, 0, dragItemContent);
-    dragItem.current = null;
-    dragOverItem.current = null;
-    setTemplates(copyListItems);
-  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   return (
     <>
       <div>Toy Form Builder</div>
-      <List dense data-testid="builder-list">
-        {templates.map((template, index) => {
-          return (
-            <ListItem
-              selected={selectedId === template.id}
-              style={{
-                border: selectedId === template.id ? '1px solid blue' : '',
-                paddingLeft: selectedId === template.id ? '18px' : '',
-              }}
-              key={template.id}
-              onClick={() => {
-                setSelectedId(template.id);
-              }}
-              draggable
-              onDragStart={(e) => dragStart(e, template.id)}
-              onDragEnter={(e) => dragEnter(e, template.id)}
-              onDragEnd={drop}
-              role="form-item"
-            >
-              <ListItemText
-                primary={template.label}
-                secondary={template.type}
-              />
-              {selectedId === template.id && (
-                <ListItemAvatar>
-                  <Button
-                    role="remove"
-                    onClick={() => deleteItemFromTemplates(template.id)}
-                  >
-                    <Avatar>
-                      <DeleteIcon />
-                    </Avatar>
-                  </Button>
-                </ListItemAvatar>
-              )}
-            </ListItem>
-          );
-        })}
-      </List>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={templates}
+          strategy={verticalListSortingStrategy}
+        >
+          <List dense data-testid="builder-list">
+            {templates.map((template, index) => {
+              return (
+                <SortableItem
+                  template={template}
+                  selectedId={selectedId}
+                  setSelectedId={setSelectedId}
+                  deleteItemFromTemplates={deleteItemFromTemplates}
+                  key={template.id}
+                ></SortableItem>
+              );
+            })}
+          </List>
+        </SortableContext>
+      </DndContext>
 
       <Button role="add-item" onClick={() => addItemToTemplates()}>
         <Avatar>
@@ -133,6 +110,19 @@ function FormBuilder() {
       </Grid>
     </>
   );
+
+  function handleDragEnd(event: any) {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setTemplates((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  }
 }
 
 export { FormBuilder };
