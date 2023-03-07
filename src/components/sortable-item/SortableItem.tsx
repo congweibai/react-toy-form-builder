@@ -47,7 +47,7 @@ export function SortableItem({
       }}
       role="form-item"
     >
-      <IconButton {...listeners} {...attributes}>
+      <IconButton {...listeners} {...attributes} sx={{ cursor: 'move' }}>
         <DragHandle></DragHandle>
       </IconButton>
       <ListItemText primary={template.label} secondary={template.type} />
