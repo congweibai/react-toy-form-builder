@@ -2,7 +2,7 @@ import { Avatar, Button, Grid, List } from '@mui/material';
 import { useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import { useFormContext } from '../../context/form-context';
-import { v4 as uuid } from 'uuid';
+import { nanoid } from 'nanoid';
 import { FormEditorPanel } from '../form-editor-panel/FormEditorPanel';
 import { getCurrentItem } from '../../helper/formHelper';
 import { JsonFormControl } from '../my-form/scheme/formScheme';
@@ -38,7 +38,7 @@ function FormBuilder() {
     const copyTemplates = [...templates];
     copyTemplates.push({
       label: 'Name',
-      id: uuid(),
+      id: nanoid(8),
       validators: {
         required: true,
       },
